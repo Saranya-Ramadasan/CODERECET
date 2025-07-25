@@ -1,0 +1,29 @@
+# Python environment
+venv/
+__pycache__/
+*.pyc
+
+# Node modules
+node_modules/
+dist/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Specific for your project
+firebase_admin_config.json # Keep this line, very important!
+backend/.env              # Add this line
+frontend/src/firebase_config.js # Add this line (or frontend/.env if you move config there)
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+backend/.env
+backend/firebase_admin_config.json

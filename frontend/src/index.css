@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font for a modern look */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Any other custom CSS rules would go here, after the @tailwind and @import statements */
+body {
+  font-family: 'Inter', sans-serif; /* Example: applying the font */
+} /* <--- ADD THIS CLOSING CURLY BRACE HERE */

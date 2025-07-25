@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Public data (read-only for authenticated users, write for admin/specific roles)
+    match /allergens/{allergenId} {
+      allow read: if request.auth != null;
+      // For populating/updating, you'd add admin-specific rules:
+      // allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /educational_resources/{resourceId} {
+      allow read: if request.auth != null;
+      // allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Private user data
+    match /users/{userId} {
+      // Allow creation of user document on first login
+      allow create: if request.auth != null && request.auth.uid == userId;
+      // Only the authenticated user can read/write their own data
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+Flask
+firebase-admin
+python-dotenv
+spacy
+Flask-Cors
+# For SpaCy model download:
+# python -m spacy download en_core_web_sm
