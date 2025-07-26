@@ -65,6 +65,7 @@ const AllergenProfile = ({ userId, db, userProfile, setUserProfile, allAllergens
   const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [secondaryRestrictions, setSecondaryRestrictions] = useState('');
   const [emergencyPlan, setEmergencyPlan] = useState({ medication: '', dosage: '', instructions: '' });
+  const [otherAllergies, setOtherAllergies] = useState(''); // NEW STATE FOR OTHER ALLERGIES
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -73,6 +74,7 @@ const AllergenProfile = ({ userId, db, userProfile, setUserProfile, allAllergens
       setEmergencyContacts(userProfile.emergencyContacts || []);
       setSecondaryRestrictions(userProfile.secondaryRestrictions || '');
       setEmergencyPlan(userProfile.emergencyPlan || { medication: '', dosage: '', instructions: '' });
+      setOtherAllergies(userProfile.otherAllergies || ''); // Initialize new state
     }
   }, [userProfile]);
 
@@ -109,9 +111,10 @@ const AllergenProfile = ({ userId, db, userProfile, setUserProfile, allAllergens
         emergencyContacts,
         secondaryRestrictions,
         emergencyPlan,
+        otherAllergies, // SAVE NEW FIELD
       };
       const userProfileRef = doc(db, `users/${userId}/profiles/user_profile`);
-      await setDoc(userProfileRef, profileData, { merge: true });
+      await setDoc(userProfileRef, profileData, { merge: true }); // Use merge to avoid overwriting other fields
       setUserProfile(profileData);
       setEditing(false);
       setMessage("Profile saved successfully!");
@@ -143,7 +146,15 @@ const AllergenProfile = ({ userId, db, userProfile, setUserProfile, allAllergens
               })}
             </ul>
           ) : (
-            <p className="text-gray-600 mb-4">No allergens specified. Click 'Edit' to add them.</p>
+            <p className="text-gray-600 mb-4">No specific allergens selected from list.</p>
+          )}
+
+          {/* Display Other Allergies in view mode */}
+          <h3 className="text-lg font-medium mb-2">Other Allergies:</h3>
+          {userProfile?.otherAllergies ? (
+            <p className="text-gray-700 mb-4 whitespace-pre-wrap">{userProfile.otherAllergies}</p>
+          ) : (
+            <p className="text-gray-600 mb-4">No other allergies specified.</p>
           )}
 
           <h3 className="text-lg font-medium mb-2">Emergency Contacts:</h3>
@@ -177,7 +188,7 @@ const AllergenProfile = ({ userId, db, userProfile, setUserProfile, allAllergens
         </div>
       ) : (
         <div>
-          <h3 className="text-lg font-medium mb-2">Select Your Allergens:</h3>
+          <h3 className="text-lg font-medium mb-2">Select Your Allergens (from list):</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 max-h-60 overflow-y-auto p-2 border rounded-md bg-gray-50">
             {allAllergens.map(allergen => (
               <label key={allergen.id} className="flex items-center space-x-2 text-gray-700">
@@ -192,6 +203,17 @@ const AllergenProfile = ({ userId, db, userProfile, setUserProfile, allAllergens
               </label>
             ))}
           </div>
+
+          {/* Input for Other Allergies in edit mode */}
+          <h3 className="text-lg font-medium mb-2">Other Allergies (comma-separated):</h3>
+          <textarea
+            placeholder="e.g., Mango, specific food dyes, obscure spices"
+            value={otherAllergies}
+            onChange={(e) => setOtherAllergies(e.target.value)}
+            rows="3"
+            className="w-full p-2 border rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500"
+          ></textarea>
+
 
           <h3 className="text-lg font-medium mb-2">Emergency Contacts:</h3>
           {emergencyContacts.map((contact, index) => (
